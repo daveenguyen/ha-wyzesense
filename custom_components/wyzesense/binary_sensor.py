@@ -113,6 +113,10 @@ def setup_platform(hass, config, add_entites, discovery_info=None):
 
     ws = beginConn()
 
+    _LOGGER.debug("Adding WyzeSense Watchdog Sensor")
+    ws_watchdog = WyzeSenseWatchdog(ws)
+    add_entites([ws_watchdog])
+
     storage = getStorage(hass)
 
     _LOGGER.debug("%d Sensors Loaded from storage" % len(storage))
@@ -180,6 +184,29 @@ def setup_platform(hass, config, add_entites, discovery_info=None):
 
     hass.services.register(DOMAIN, SERVICE_SCAN, on_scan, SERVICE_SCAN_SCHEMA)
     hass.services.register(DOMAIN, SERVICE_REMOVE, on_remove, SERVICE_REMOVE_SCHEMA)
+
+
+class WyzeSenseWatchdog(BinarySensorDevice):
+    """Class to hold WyzeSense integration health"""
+
+    def __init__(self, ws):
+        self._ws = ws
+        self._is_alive = True
+
+    @property
+    def is_on(self):
+        return self._is_alive
+
+    @property
+    def should_poll(self):
+        return True
+
+    @property
+    def unique_id(self):
+        return self._ws._Dongle__device
+
+    def update(self):
+        self._is_alive = self._ws._Dongle__thread.is_alive()
 
 
 class WyzeSensor(BinarySensorDevice, RestoreEntity):
