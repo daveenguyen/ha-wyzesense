@@ -369,6 +369,9 @@ class Dongle(object):
                     log.debug("Received: %s", bytes_to_hex(s[:pkt.Length]))
                     s = s[pkt.Length:]
                     self._HandlePacket(pkt)
+                if self.__exit_event.isSet():
+                    log.debug("Exiting. Exit Event is set")
+                    break
             except OSError as e:
                 log.error(e)
                 break
