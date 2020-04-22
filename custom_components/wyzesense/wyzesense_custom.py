@@ -556,6 +556,14 @@ class Dongle(object):
         assert ack_mac == mac, "CmdDelSensor: MAC mismatch, requested:%s, returned:%s" % (mac, ack_mac)
         log.debug("CmdDelSensor: %s deleted", mac)
 
+    def Restart(self):
+        log.debug("Restarting Dongle")
+        try:
+            self.Stop()
+        except Error as e:
+            log.error(e)
+        self.__init__(self.__device, self.__on_event)
+
 
 def Open(device, event_handler):
     return Dongle(device, event_handler)

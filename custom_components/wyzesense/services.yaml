@@ -9,3 +9,6 @@ remove:
     mac:
       description: MAC address of the node to remove
       example: "777A4656"
+
+restart:
+  description: Restart the worker thread

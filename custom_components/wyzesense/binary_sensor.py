@@ -42,12 +42,15 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 
 SERVICE_SCAN = 'scan'
 SERVICE_REMOVE = 'remove'
+SERVICE_RESTART = 'restart'
 
 SERVICE_SCAN_SCHEMA = vol.Schema({})
 
 SERVICE_REMOVE_SCHEMA = vol.Schema({
     vol.Required(ATTR_MAC): cv.string
 })
+
+SERVICE_RESTART_SCHEMA = vol.Schema({})
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -182,8 +185,12 @@ def setup_platform(hass, config, add_entites, discovery_info=None):
             hass.components.persistent_notification.create(notification, DOMAIN)
             _LOGGER.debug(notification)
 
+    def on_restart(call):
+        ws.Restart()
+
     hass.services.register(DOMAIN, SERVICE_SCAN, on_scan, SERVICE_SCAN_SCHEMA)
     hass.services.register(DOMAIN, SERVICE_REMOVE, on_remove, SERVICE_REMOVE_SCHEMA)
+    hass.services.register(DOMAIN, SERVICE_RESTART, on_restart, SERVICE_RESTART_SCHEMA)
 
 
 class WyzeSenseWatchdog(BinarySensorDevice):
