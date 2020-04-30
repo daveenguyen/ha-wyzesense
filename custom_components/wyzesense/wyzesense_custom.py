@@ -567,8 +567,8 @@ class Dongle(object):
         log.debug("Restarting Dongle")
         try:
             self.Stop()
-        except Error as e:
-            log.error(e)
+        except:
+            log.exception("Ignoring error raised while stopping dongle")
         self.__init__(self.__device, self.__on_event)
 
 

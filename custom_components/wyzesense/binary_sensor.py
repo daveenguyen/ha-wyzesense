@@ -213,7 +213,10 @@ class WyzeSenseWatchdog(BinarySensorDevice):
         return self._ws._Dongle__device
 
     def update(self):
-        self._is_alive = self._ws._Dongle__thread.is_alive()
+        new_value = self._ws._Dongle__thread.is_alive()
+        if self._is_alive is not new_value:
+            _LOGGER.debug(f"Updating Watchdog to {new_value}")
+            self._is_alive = self._ws._Dongle__thread.is_alive()
 
 
 class WyzeSensor(BinarySensorDevice, RestoreEntity):
