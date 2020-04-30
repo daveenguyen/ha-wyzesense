@@ -374,7 +374,11 @@ class Dongle(object):
                     break
             except OSError as e:
                 log.error(e)
+                log.exception("OSError in worker thread")
                 break
+            except:
+                log.exception("non-OSError in worker thread. Reraising")
+                raise
 
     def _DoCommand(self, pkt, handler, timeout=_CMD_TIMEOUT):
         e = threading.Event()
